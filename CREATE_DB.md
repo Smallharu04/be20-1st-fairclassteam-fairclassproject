@@ -62,9 +62,12 @@ CREATE TABLE affiliation (
 
 CREATE TABLE completion (
   completion_type_code BIGINT NOT NULL AUTO_INCREMENT,
-  division ENUM('전필','전선','교양') NOT NULL ,
+  --  - MAJOR_REQUIRED : 전공필수
+  --  - MAJOR_ELECTIVE : 전공선택
+  --  - LIBERAL_ARTS   : 교양
+  division ENUM('MAJOR_REQUIRED','MAJOR_ELECTIVE','LIBERAL_ARTS') NOT NULL,
   PRIMARY KEY (completion_type_code)
-) ENGINE=INNODB;
+) ENGINE=InnoDB;
 
 
 CREATE TABLE semester (

@@ -1,6 +1,4 @@
--- Clean slate (optional)
-SET FOREIGN_KEY_CHECKS = 0;
-
+-- 기존 테이블이 있으면 모두 삭제
 DROP TABLE IF EXISTS lecture_review_report;
 DROP TABLE IF EXISTS lecture_review;
 DROP TABLE IF EXISTS report_type;
@@ -23,12 +21,10 @@ DROP TABLE IF EXISTS semester;
 DROP TABLE IF EXISTS notice;
 DROP TABLE IF EXISTS announcement;
 DROP TABLE IF EXISTS administrator;
-DROP TABLE IF EXISTS "user";
+DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS authorization;
 
-SET FOREIGN_KEY_CHECKS = 1;
-
--- 0) 기초 마스터들 ------------------------------------------------------------
+-- 0) 기초 테이블  ------------------------------------------------------------
 
 CREATE TABLE authorization (
   auth_code   BIGINT NOT NULL AUTO_INCREMENT,
@@ -47,13 +43,13 @@ CREATE TABLE user (
 	PRIMARY KEY (user_code),
   FOREIGN KEY (auth_code) 
   REFERENCES authorization(auth_code)
-);
+)ENGINE=INNODB;
 
 CREATE TABLE college (
   college_code INT NOT NULL AUTO_INCREMENT,
   college_name VARCHAR(255) NOT NULL,
   PRIMARY KEY (college_code)
-) ;
+) ENGINE=INNODB;
 
 CREATE TABLE affiliation (
   major_code BIGINT NOT NULL AUTO_INCREMENT,
@@ -77,7 +73,7 @@ CREATE TABLE semester (
   last_day_of_class TIMESTAMP NOT NULL,
   `year`          DATE       NOT NULL,
   PRIMARY KEY (semester_code)
-) ENGINE=InnoDB
+) ENGINE=INNODB;
 
 CREATE TABLE classroom (
   classroom_code BIGINT   NOT NULL AUTO_INCREMENT,
@@ -143,12 +139,12 @@ CREATE TABLE lecture (
   created_at      DATE         NULL,
   updated_at      DATE         NULL,
   PRIMARY KEY (lecture_code),
-    FOREIGN KEY (semester_code)  REFERENCES semester(semester_code),
-    FOREIGN KEY (subject_code)   REFERENCES subject(subject_code),
-    FOREIGN KEY (professor_code) REFERENCES professor(professor_code),
-    FOREIGN KEY (classroom_code) REFERENCES classroom(classroom_code),
-    FOREIGN KEY (admin_code)     REFERENCES administrator(admin_code)
-) ENGINE=InnoDB 
+  FOREIGN KEY (semester_code)  REFERENCES semester(semester_code),
+  FOREIGN KEY (subject_code)   REFERENCES subject(subject_code),
+  FOREIGN KEY (professor_code) REFERENCES professor(professor_code),
+  FOREIGN KEY (classroom_code) REFERENCES classroom(classroom_code),
+  FOREIGN KEY (admin_code)     REFERENCES administrator(admin_code)
+) ENGINE=INNODB;
 
 CREATE TABLE course_book (
   book_code    BIGINT       NOT NULL AUTO_INCREMENT,
@@ -158,7 +154,7 @@ CREATE TABLE course_book (
   publisher    VARCHAR(255) NULL,
   PRIMARY KEY (book_code),
   FOREIGN KEY (lecture_code) REFERENCES lecture(lecture_code)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=INNODB;
 
 -- 3) 수강신청/대기/장바구니/수강이력 ----------------------------------------
 
@@ -169,7 +165,7 @@ CREATE TABLE applicant (
   PRIMARY KEY (stu_code, lecture_code),
   FOREIGN KEY (stu_code)     REFERENCES student(stu_code),
   FOREIGN KEY (lecture_code) REFERENCES lecture(lecture_code)
-) ENGINE=InnoDB
+) ENGINE=INNODB;
 
 CREATE TABLE waitlist (
   waitlist_code BIGINT NOT NULL AUTO_INCREMENT,
@@ -179,7 +175,7 @@ CREATE TABLE waitlist (
   PRIMARY KEY (waitlist_code),
   FOREIGN KEY (lecture_code) REFERENCES lecture(lecture_code),
   FOREIGN KEY (stu_code)     REFERENCES student(stu_code)
-) ENGINE=InnoDB 
+) ENGINE=INNODB;
 
 CREATE TABLE basket (
   basket_code  BIGINT NOT NULL AUTO_INCREMENT,
@@ -188,7 +184,7 @@ CREATE TABLE basket (
   PRIMARY KEY (basket_code),
     FOREIGN KEY (lecture_code) REFERENCES lecture(lecture_code),
     FOREIGN KEY (stu_code)     REFERENCES student(stu_code)
-) ENGINE=InnoDB
+) ENGINE=INNODB;
 
 CREATE TABLE class_history (
   history_code BIGINT NOT NULL AUTO_INCREMENT,
@@ -197,7 +193,7 @@ CREATE TABLE class_history (
   PRIMARY KEY (history_code, stu_code),
   FOREIGN KEY (stu_code)     REFERENCES student(stu_code),
   FOREIGN KEY (lecture_code) REFERENCES lecture(lecture_code)
-) ENGINE=InnoDB
+) ENGINE=INNODB;
 
 -- 4) 포인트/공지/알림 --------------------------------------------------------
 
@@ -207,7 +203,7 @@ CREATE TABLE POINT   (
   point_description VARCHAR(255) NULL,
   point_amount      INT          NULL,
   PRIMARY KEY (point_code)
-) ENGINE=InnoDB
+) ENGINE=INNODB;
 
 CREATE TABLE point_history (
   use_code   INT    NOT NULL AUTO_INCREMENT,
@@ -217,7 +213,7 @@ CREATE TABLE point_history (
   PRIMARY KEY (use_code),
   FOREIGN KEY (stu_code)   REFERENCES student(stu_code),
   FOREIGN KEY (point_code) REFERENCES point(point_code)
-) ENGINE=InnoDB
+) ENGINE=INNODB;
 
 CREATE TABLE notice (
   notice_code    BIGINT       NOT NULL AUTO_INCREMENT,
@@ -227,7 +223,7 @@ CREATE TABLE notice (
   notice_type    ENUM('WAITLIST_REGISTERED','ENROLL_FAIL','REPORT_RECEIVED','REPORTED') NOT NULL,
   PRIMARY KEY (notice_code),
   FOREIGN KEY (stu_code) REFERENCES student(stu_code)
-) ENGINE=InnoDB
+) ENGINE=INNODB;
 
 CREATE TABLE announcement (
   announcement_code BIGINT       NOT NULL AUTO_INCREMENT,
@@ -239,7 +235,7 @@ CREATE TABLE announcement (
   public            ENUM('Y','N') NOT NULL,
   PRIMARY KEY (announcement_code),
   FOREIGN KEY (admin_code) REFERENCES administrator(admin_code)
-) ENGINE=InnoDB
+) ENGINE=INNODB;
 
 -- 5) 강의평/신고 -------------------------------------------------------------
 
@@ -257,7 +253,7 @@ CREATE TABLE lecture_review (
   PRIMARY KEY (lecture_review_code),
   FOREIGN KEY (lecture_code) REFERENCES lecture(lecture_code),
   FOREIGN KEY (stu_code)     REFERENCES student(stu_code)
-) ENGINE=InnoDB
+) ENGINE=INNODB;
 
 CREATE TABLE report_type (
   report_type_code INT          NOT NULL AUTO_INCREMENT,

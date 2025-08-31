@@ -62,7 +62,7 @@ CREATE TABLE affiliation (
 ) ENGINE=INNODB;
 
 -- change table name from completion to subject_compl
-CREATE TABLE completion (
+CREATE TABLE subject_compl (
   completion_type_code BIGINT NOT NULL AUTO_INCREMENT,
   --  - MAJOR_REQUIRED : 전공필수
   --  - MAJOR_ELECTIVE : 전공선택

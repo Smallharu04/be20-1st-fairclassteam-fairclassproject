@@ -1,3 +1,9 @@
+-- 기존 테이블이 있으면 모두 삭제 (외래키 제약 때문에 역순 삭제) DROP TABLE IF EXISTS lecture_review_report; DROP TABLE IF EXISTS lecture_review; DROP TABLE IF EXISTS report_type; DROP TABLE IF EXISTS course_book; DROP TABLE IF EXISTS point_history; DROP TABLE IF EXISTS point; DROP TABLE IF EXISTS applicant; DROP TABLE IF EXISTS waitlist; DROP TABLE IF EXISTS basket; DROP TABLE IF EXISTS class_history; DROP TABLE IF EXISTS lecture; DROP TABLE IF EXISTS classroom; DROP TABLE IF EXISTS subjects; DROP TABLE IF EXISTS subject_compl; DROP TABLE IF EXISTS professor; DROP TABLE IF EXISTS student; DROP TABLE IF EXISTS affiliation; DROP TABLE IF EXISTS college; DROP TABLE IF EXISTS semester; DROP TABLE IF EXISTS notice; DROP TABLE IF EXISTS announcement; DROP TABLE IF EXISTS administrator; DROP TABLE IF EXISTS users; DROP TABLE IF EXISTS authorization;
+
+-- create database
+CREATE DATABASE fairclass; 
+GRANT ALL PRIVILEGES ON fairclass.* TO 'swcamp'@'%';	-- menu에 대한 모든 권한 부여
+
 -- 기존 테이블이 있으면 모두 삭제 (외래키 제약 때문에 역순 삭제)
 DROP TABLE IF EXISTS lecture_review_report;
 DROP TABLE IF EXISTS lecture_review;
@@ -33,7 +39,8 @@ CREATE TABLE authorization (
   PRIMARY KEY (auth_code)
 ) ENGINE=INNODB;
 
-CREATE TABLE user (
+-- changed table name from user to users
+CREATE TABLE users (
 	user_code	BIGINT	NOT NULL AUTO_INCREMENT,
 	auth_code	BIGINT	NOT NULL ,
 	email	varchar(255)	NOT NULL,
@@ -60,7 +67,8 @@ CREATE TABLE affiliation (
   REFERENCES college(college_code)
 ) ENGINE=INNODB;
 
-CREATE TABLE completion (
+-- change table name from completion to subject_compl
+CREATE TABLE subject_compl (
   completion_type_code BIGINT NOT NULL AUTO_INCREMENT,
   --  - MAJOR_REQUIRED : 전공필수
   --  - MAJOR_ELECTIVE : 전공선택
@@ -105,12 +113,12 @@ CREATE TABLE student (
   status     ENUM('ENROLLED','LEAVE','GRADUATED') NOT NULL,  -- 예: ENROLLED/LEAVE/GRADUATED 등
   PRIMARY KEY (stu_code),
   FOREIGN KEY (major_code) REFERENCES affiliation(major_code),
-  FOREIGN KEY (user_code)  REFERENCES user(user_code)
+  FOREIGN KEY (user_code)  REFERENCES users(user_code)
 ) ENGINE=INNODB;
 
 -- 2) 과목/강의/교재 ----------------------------------------------------------
-
-CREATE TABLE subject (
+-- change table name from subject to subjects
+CREATE TABLE subjects (
   subject_code         BIGINT       NOT NULL AUTO_INCREMENT,
   major_code           BIGINT       NOT NULL,
   completion_type_code BIGINT       NOT NULL,
@@ -118,7 +126,7 @@ CREATE TABLE subject (
   grade                INT          NOT NULL,
   PRIMARY KEY (subject_code),
   FOREIGN KEY (major_code) REFERENCES affiliation(major_code),
-  FOREIGN KEY (completion_type_code) REFERENCES completion(completion_type_code)
+  FOREIGN KEY (completion_type_code) REFERENCES subject_compl(completion_type_code)
 ) ENGINE=INNODB;
 
 CREATE TABLE administrator (
@@ -126,7 +134,7 @@ CREATE TABLE administrator (
   user_code  BIGINT NOT NULL,
   position   VARCHAR(255) NOT NULL,
   PRIMARY KEY (admin_code),
-  FOREIGN KEY (user_code) REFERENCES user(user_code)
+  FOREIGN KEY (user_code) REFERENCES users(user_code)
 ) ENGINE=INNODB;
 
 CREATE TABLE lecture (
@@ -143,7 +151,7 @@ CREATE TABLE lecture (
   updated_at      DATE         NULL,
   PRIMARY KEY (lecture_code),
   FOREIGN KEY (semester_code)  REFERENCES semester(semester_code),
-  FOREIGN KEY (subject_code)   REFERENCES subject(subject_code),
+  FOREIGN KEY (subject_code)   REFERENCES subjects(subject_code),
   FOREIGN KEY (professor_code) REFERENCES professor(professor_code),
   FOREIGN KEY (classroom_code) REFERENCES classroom(classroom_code),
   FOREIGN KEY (admin_code)     REFERENCES administrator(admin_code)
@@ -274,3 +282,9 @@ CREATE TABLE lecture_review_report (
   FOREIGN KEY (lecture_review_code) REFERENCES lecture_review(lecture_review_code),
   FOREIGN KEY (report_type_code)    REFERENCES report_type(report_type_code)
 ) ENGINE=INNODB;
+
+
+-- authorization 
+INSERT INTO authorization (auth_date, role) VALUES ('2025-01-01', 'ADMIN'), ('2025-01-02', 'STUDENT');
+
+

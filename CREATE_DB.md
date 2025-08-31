@@ -60,6 +60,7 @@ CREATE TABLE affiliation (
   REFERENCES college(college_code)
 ) ENGINE=INNODB;
 
+-- change table name from completion to subject_compl
 CREATE TABLE completion (
   completion_type_code BIGINT NOT NULL AUTO_INCREMENT,
   --  - MAJOR_REQUIRED : 전공필수
@@ -109,8 +110,8 @@ CREATE TABLE student (
 ) ENGINE=INNODB;
 
 -- 2) 과목/강의/교재 ----------------------------------------------------------
-
-CREATE TABLE subject (
+-- change table name from subject to subjects
+CREATE TABLE subjects (
   subject_code         BIGINT       NOT NULL AUTO_INCREMENT,
   major_code           BIGINT       NOT NULL,
   completion_type_code BIGINT       NOT NULL,

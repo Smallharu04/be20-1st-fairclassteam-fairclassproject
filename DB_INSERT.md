@@ -5,7 +5,7 @@ INSERT INTO authorization (auth_date, role) VALUES
 
 
 -- user
-INSERT INTO user (auth_code, email, password, mobile, name) VALUES
+INSERT INTO users (auth_code, email, password, mobile, name) VALUES
 (1, 'admin1@univ.ac.kr', 'pw1', '010-1111-1111', '관리자1'),
 (2, 'student1@univ.ac.kr', 'pw2', '010-2222-2222', '학생1'),
 (2, 'student2@univ.ac.kr', 'pw3', '010-3333-3333', '학생2');
@@ -24,7 +24,7 @@ INSERT INTO affiliation (college_code, major_name) VALUES
 (5, '경영학과');
 
 -- completion (이수구분)
-INSERT INTO completion (division) VALUES
+INSERT INTO subject_compl (division) VALUES
 ('MAJOR_REQUIRED'),
 ('MAJOR_ELECTIVE'),
 ('LIBERAL_ARTS');
@@ -65,7 +65,7 @@ INSERT INTO student (major_code, user_code, grade, status) VALUES
 
 
 -- subject
-INSERT INTO subject (major_code, completion_type_code, subject_name, grade) VALUES
+INSERT INTO subjects (major_code, completion_type_code, subject_name, grade) VALUES
 (1, 1, '자료구조', 3),
 (1, 2, '운영체제', 3),
 (2, 3, '전자회로', 2),

@@ -33,7 +33,8 @@ CREATE TABLE authorization (
   PRIMARY KEY (auth_code)
 ) ENGINE=INNODB;
 
-CREATE TABLE user (
+-- changed table name from user to users
+CREATE TABLE users (
 	user_code	BIGINT	NOT NULL AUTO_INCREMENT,
 	auth_code	BIGINT	NOT NULL ,
 	email	varchar(255)	NOT NULL,
